@@ -37,6 +37,7 @@ var adapter = new API.adapters.Mongoose(models, null)
 var app = express();
 app.use(express.static(__dirname + '/public'));
 
+app.get("/", Docs.index.bind(Docs));
 app.get("/:type(organizations|schools|people)", Base.GET.bind(Base));
 app.get("/:type(organizations|schools|people)/:id", Base.GET.bind(Base));
 app.post("/:type(organizations|schools|people)", Base.POST.bind(Base));
@@ -50,5 +51,5 @@ app.use(function(req, res, next) {
 });
 
 // And we're done! Start 'er up!
-console.log('Starting up! Visit 127.0.0.1:3000');
+console.log('Starting up! Visit 127.0.0.1:3000 to see the docs.');
 app.listen(3000);
