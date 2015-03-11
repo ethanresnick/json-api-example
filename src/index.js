@@ -1,6 +1,7 @@
 'use strict';
-var express = require('express')
-  , API     = require('json-api')
+var path     = require('path')
+  , express  = require('express')
+  , API      = require('json-api')
   , mongoose = require('mongoose');
 
 // Start by loading up all our mongoose models and connecting.
@@ -21,14 +22,18 @@ var models = {
 // Check /resource-desciptions/school.js to see some of the advanced features.
 var adapter = new API.adapters.Mongoose(models, null)
   , registry = new API.ResourceTypeRegistry()
-  , Base = new API.controllers.Base(registry)
-  , Docs = new API.controllers.Documentation(registry, {name: 'Example API'});
+  , Base = new API.controllers.Base(registry);
 
 ["people", "organizations", "schools"].forEach(function(resourceType) {
   var description = require('./resource-descriptions/' + resourceType);
   description.adapter = adapter;
   registry.type(resourceType, description);
 })
+
+// Initialize the automatic documentation. 
+// Note: don't do this til after you've registered all your resources.
+var templatePath = path.resolve(__dirname, './public/views/style-docs.jade')
+var Docs = new API.controllers.Documentation(registry, {name: 'Example API'}, templatePath);
 
 // Now, add the routes.
 // To do this in a more scalable and configurable way, check out
