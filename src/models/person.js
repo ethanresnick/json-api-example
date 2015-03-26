@@ -1,10 +1,13 @@
 'use strict';
 var mongoose   = require('mongoose');
 
-var schema = mongoose.Schema({    
+var schema = mongoose.Schema({
   name: String,
   email: {type: String, lowercase: true},
-  gender: String
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'other']
+  }
 });
 
 module.exports = mongoose.model('Person', schema);
