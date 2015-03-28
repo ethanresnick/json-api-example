@@ -1,5 +1,5 @@
 module.exports = {
   urlTemplates: {
-    "organizations": "http://127.0.0.1/organizations/{organizations.id}"
+    "self": "http://127.0.0.1:3000/organizations/{id}"
   }
 }
