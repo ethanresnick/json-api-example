@@ -34,6 +34,7 @@ var adapter = new API.adapters.Mongoose(models, null)
 // Note: don't do this til after you've registered all your resources.
 var templatePath = path.resolve(__dirname, './public/views/style-docs.jade')
 var Docs = new API.controllers.Documentation(registry, {name: 'Example API'}, templatePath);
+var Front = new API.controllers.Front(Controller, Docs);
 
 // Now, add the routes.
 // To do this in a more scalable and configurable way, check out
@@ -42,13 +43,14 @@ var Docs = new API.controllers.Documentation(registry, {name: 'Example API'}, te
 var app = express();
 app.use(express.static(__dirname + '/public'));
 
-app.get("/", Docs.index.bind(Docs));
-app.get("/:type(organizations|schools|people)", Controller.resourceRequest.bind(Controller));
-app.get("/:type(organizations|schools|people)/:id", Controller.resourceRequest.bind(Controller));
-app.post("/:type(organizations|schools|people)", Controller.resourceRequest.bind(Controller));
-app.patch("/:type(organizations|schools|people)", Controller.resourceRequest.bind(Controller));
-app.patch("/:type(organizations|schools|people)/:id", Controller.resourceRequest.bind(Controller));
-app.delete("/:type(organizations|schools|people)/:id", Controller.resourceRequest.bind(Controller));
+app.get("/", Front.docsRequest.bind(Front));
+app.get("/:type(organizations|schools|people)", Front.apiRequest.bind(Front));
+app.get("/:type(organizations|schools|people)/:id", Front.apiRequest.bind(Front));
+app.post("/:type(organizations|schools|people)", Front.apiRequest.bind(Front));
+app.post("/:type(organizations|schools|people)/:id/links/:relationship", Front.apiRequest.bind(Front));
+app.patch("/:type(organizations|schools|people)", Front.apiRequest.bind(Front));
+app.patch("/:type(organizations|schools|people)/:id", Front.apiRequest.bind(Front));
+app.delete("/:type(organizations|schools|people)/:id", Front.apiRequest.bind(Front));
 app.use(function(req, res, next) {
   Controller.sendError({'message': 'Not Found', 'status': 404}, req, res);
 });
