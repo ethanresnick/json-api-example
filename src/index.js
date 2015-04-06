@@ -20,7 +20,7 @@ var models = {
 // Below, we load up every resource type and give each the same adapter; in
 // theory, though, different types could be powered by different dbs/adapters.
 // Check /resource-desciptions/school.js to see some of the advanced features.
-var adapter = new API.adapters.Mongoose(models, null)
+var adapter = new API.adapters.Mongoose(models)
   , registry = new API.ResourceTypeRegistry()
   , Controller = new API.controllers.API(registry);
 
@@ -34,23 +34,26 @@ var adapter = new API.adapters.Mongoose(models, null)
 // Note: don't do this til after you've registered all your resources.
 var templatePath = path.resolve(__dirname, './public/views/style-docs.jade')
 var Docs = new API.controllers.Documentation(registry, {name: 'Example API'}, templatePath);
+
+// Initialize the express app + front controller.
+var app = express();
+app.use(express.static(__dirname + '/public'));
+
 var Front = new API.controllers.Front(Controller, Docs);
+var apiReqHandler = Front.apiRequest.bind(Front);
 
 // Now, add the routes.
 // To do this in a more scalable and configurable way, check out
 // http://github.com/ethanresnick/express-simple-router. To protect some
 // routes, check out http://github.com/ethanresnick/express-simple-firewall.
-var app = express();
-app.use(express.static(__dirname + '/public'));
-
 app.get("/", Front.docsRequest.bind(Front));
-app.get("/:type(organizations|schools|people)", Front.apiRequest.bind(Front));
-app.get("/:type(organizations|schools|people)/:id", Front.apiRequest.bind(Front));
-app.post("/:type(organizations|schools|people)", Front.apiRequest.bind(Front));
-app.post("/:type(organizations|schools|people)/:id/links/:relationship", Front.apiRequest.bind(Front));
-app.patch("/:type(organizations|schools|people)", Front.apiRequest.bind(Front));
-app.patch("/:type(organizations|schools|people)/:id", Front.apiRequest.bind(Front));
-app.delete("/:type(organizations|schools|people)/:id", Front.apiRequest.bind(Front));
+app.route("/:type")
+  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
+app.route("/:type/:id")
+  .get(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
+app.route("/:type/:id/links/:relationship")
+  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
+
 app.use(function(req, res, next) {
   Controller.sendError({'message': 'Not Found', 'status': 404}, req, res);
 });
