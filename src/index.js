@@ -47,15 +47,15 @@ var apiReqHandler = Front.apiRequest.bind(Front);
 // http://github.com/ethanresnick/express-simple-router. To protect some
 // routes, check out http://github.com/ethanresnick/express-simple-firewall.
 app.get("/", Front.docsRequest.bind(Front));
-app.route("/:type")
+app.route("/:type(people|organizations|schools)")
   .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
-app.route("/:type/:id")
+app.route("/:type(people|organizations|schools)/:id")
   .get(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
-app.route("/:type/:id/links/:relationship")
+app.route("/:type(people|organizations|schools)/:id/links/:relationship")
   .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
 
 app.use(function(req, res, next) {
-  Controller.sendError({'message': 'Not Found', 'status': 404}, req, res);
+  Front.sendError({'message': 'Not Found', 'status': 404}, req, res);
 });
 
 // And we're done! Start 'er up!
