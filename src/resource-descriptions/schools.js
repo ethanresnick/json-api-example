@@ -1,7 +1,8 @@
 module.exports = {
   parentType: "organizations",
   urlTemplates: {
-    "self": "http://127.0.0.1:3000/schools/{id}"
+    "self": "http://127.0.0.1:3000/schools/{id}",
+    "relationship": "http://127.0.0.1:3000/schools/{ownerId}/links/{path}"
   },
 
   labelToIdOrIds: function(label, model, req) {
