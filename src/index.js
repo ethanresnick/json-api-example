@@ -31,13 +31,11 @@ var adapter = new API.adapters.Mongoose(models)
 })
 
 // Initialize the automatic documentation.
-// Note: don't do this til after you've registered all your resources.
-var templatePath = path.resolve(__dirname, './public/views/style-docs.jade')
-var Docs = new API.controllers.Documentation(registry, {name: 'Example API'}, templatePath);
+// Note: don't do this til after you've registered all your resources.)
+var Docs = new API.controllers.Documentation(registry, {name: 'Example API'});
 
 // Initialize the express app + front controller.
 var app = express();
-app.use(express.static(__dirname + '/public'));
 
 var Front = new API.controllers.Front(Controller, Docs);
 var apiReqHandler = Front.apiRequest.bind(Front);
