@@ -20,13 +20,13 @@ var models = {
 // Below, we load up every resource type and give each the same adapter; in
 // theory, though, different types could be powered by different dbs/adapters.
 // Check /resource-desciptions/school.js to see some of the advanced features.
-var adapter = new API.adapters.Mongoose(models)
+var adapter = new API.dbAdapters.Mongoose(models)
   , registry = new API.ResourceTypeRegistry()
   , Controller = new API.controllers.API(registry);
 
 ["people", "organizations", "schools"].forEach(function(resourceType) {
   var description = require('./resource-descriptions/' + resourceType);
-  description.adapter = adapter;
+  description.dbAdapter = adapter;
   registry.type(resourceType, description);
 })
 
@@ -37,7 +37,7 @@ var Docs = new API.controllers.Documentation(registry, {name: 'Example API'});
 // Initialize the express app + front controller.
 var app = express();
 
-var Front = new API.controllers.Front(Controller, Docs);
+var Front = new API.httpStrategies.Express(Controller, Docs);
 var apiReqHandler = Front.apiRequest.bind(Front);
 
 // Now, add the routes.
@@ -49,7 +49,7 @@ app.route("/:type(people|organizations|schools)")
   .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
 app.route("/:type(people|organizations|schools)/:id")
   .get(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
-app.route("/:type(people|organizations|schools)/:id/links/:relationship")
+app.route("/:type(people|organizations|schools)/:id/relationships/:relationship")
   .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
 
 app.use(function(req, res, next) {
