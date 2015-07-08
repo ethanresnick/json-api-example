@@ -8,7 +8,9 @@ function OrganizationSchema() {
   this.add({
     name: {
       type: String,
-      required: true
+      required: true,
+      unique: true,
+      index: true
     },
     description: {
       type: String
