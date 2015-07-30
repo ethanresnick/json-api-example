@@ -2,6 +2,7 @@
 var path     = require('path')
   , express  = require('express')
   , API      = require('json-api')
+  , APIError = API.types.Error
   , mongoose = require('mongoose');
 
 // Start by loading up all our mongoose models and connecting.
@@ -53,7 +54,7 @@ app.route("/:type(people|organizations|schools)/:id/relationships/:relationship"
   .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
 
 app.use(function(req, res, next) {
-  Front.sendError({'message': 'Not Found', 'status': 404}, req, res);
+  Front.sendError(new APIError(404, undefined, 'Not Found'), req, res);
 });
 
 // And we're done! Start 'er up!
