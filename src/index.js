@@ -41,6 +41,13 @@ var app = express();
 var Front = new API.httpStrategies.Express(Controller, Docs);
 var apiReqHandler = Front.apiRequest.bind(Front);
 
+// Enable CORS. Note: if you copy this code into production, you may want to
+// disable this. See https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
+app.use(function(req, res, next) {
+  res.set('Access-Control-Allow-Origin', '*');
+  next();
+})
+
 // Now, add the routes.
 // To do this in a more scalable and configurable way, check out
 // http://github.com/ethanresnick/express-simple-router. To protect some
