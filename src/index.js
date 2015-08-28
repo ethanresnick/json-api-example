@@ -3,6 +3,7 @@ var path     = require('path')
   , express  = require('express')
   , API      = require('json-api')
   , APIError = API.types.Error
+  , Router   = require("express-simple-router")
   , mongoose = require('mongoose');
 
 // Start by loading up all our mongoose models and connecting.
@@ -35,11 +36,12 @@ var adapter = new API.dbAdapters.Mongoose(models)
 // Note: don't do this til after you've registered all your resources.)
 var Docs = new API.controllers.Documentation(registry, {name: 'Example API'});
 
-// Initialize the express app + front controller.
+// Initialize the express app + the front controller,
+// which we'll call API for routing purposes.
 var app = express();
-
-var Front = new API.httpStrategies.Express(Controller, Docs);
-var apiReqHandler = Front.apiRequest.bind(Front);
+var controllers = {
+  'API': new API.httpStrategies.Express(Controller, Docs)
+};
 
 // Enable CORS. Note: if you copy this code into production, you may want to
 // disable this. See https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
@@ -49,19 +51,17 @@ app.use(function(req, res, next) {
 })
 
 // Now, add the routes.
-// To do this in a more scalable and configurable way, check out
-// http://github.com/ethanresnick/express-simple-router. To protect some
-// routes, check out http://github.com/ethanresnick/express-simple-firewall.
-app.get("/", Front.docsRequest.bind(Front));
-app.route("/:type(people|organizations|schools)")
-  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
-app.route("/:type(people|organizations|schools)/:id")
-  .get(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
-app.route("/:type(people|organizations|schools)/:id/relationships/:relationship")
-  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
+var routes = [
+  { "path": "/", "handler": "API.docsRequest" },
+  { "path": "/:type(people|organizations|schools)", "handler": "API.apiRequest", "method": "GET" },
+  { "path": "/:type(people|organizations|schools)", "handler": "API.apiRequest", "method": "POST" },
+  { "path": "/:type(people|organizations|schools)", "handler": "API.apiRequest", "method": "PATCH" }
+];
+
+app.use(Router(routes, "127.0.0.1").handle(controllers));
 
 app.use(function(req, res, next) {
-  Front.sendError(new APIError(404, undefined, 'Not Found'), req, res);
+  controllers.API.sendError(new APIError(404, undefined, 'Not Found'), req, res);
 });
 
 // And we're done! Start 'er up!
