@@ -21,18 +21,16 @@ var models = {
 // Below, we load up every resource type and give each the same adapter; in
 // theory, though, different types could be powered by different dbs/adapters.
 // Check /resource-desciptions/school.js to see some of the advanced features.
-var adapter = new API.dbAdapters.Mongoose(models)
-  , registry = new API.ResourceTypeRegistry()
-  , Controller = new API.controllers.API(registry);
+var adapter = new API.dbAdapters.Mongoose(models);
+var registry = new API.ResourceTypeRegistry({
+  people: require('./resource-descriptions/people'),
+  organizations: require('./resource-descriptions/organizations'),
+  schools: require('./resource-descriptions/schools')
+}, { dbAdapter: adapter });
 
-["people", "organizations", "schools"].forEach(function(resourceType) {
-  var description = require('./resource-descriptions/' + resourceType);
-  description.dbAdapter = adapter;
-  registry.type(resourceType, description);
-})
+var Controller = new API.controllers.API(registry);
 
 // Initialize the automatic documentation.
-// Note: don't do this til after you've registered all your resources.)
 var Docs = new API.controllers.Documentation(registry, {name: 'Example API'});
 
 // Initialize the express app + front controller.
