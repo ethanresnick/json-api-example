@@ -56,7 +56,7 @@ app.route("/:type(people|organizations|schools)")
 app.route("/:type(people|organizations|schools)/:id")
   .get(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
 app.route("/:type(people|organizations|schools)/:id/relationships/:relationship")
-  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
+  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
 
 app.use(function(req, res, next) {
   Front.sendError(new APIError(404, undefined, 'Not Found'), req, res);
