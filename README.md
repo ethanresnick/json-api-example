@@ -6,7 +6,7 @@ An example API created with my JSON-API library (http://github.com/ethanresnick/
 1. Clone the repo
 2. Run `npm install`
 3. Ensure MongoDB is running and listening on the default port
-4. Run `node src/index.js`
+4. Run `npm run start`
 5. Try out the following (for example):
   - `GET http://localhost:3000/` to view the auto-generated documentation
   - `GET http://localhost:3000/people` to view the people collection
