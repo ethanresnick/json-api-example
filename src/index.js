@@ -33,10 +33,12 @@ var Controller = new API.controllers.API(registry);
 // Initialize the automatic documentation.
 var Docs = new API.controllers.Documentation(registry, {name: 'Example API'});
 
+// tell the lib the host name your API is served from; needed for security.
+var opts = { host: 'example.com' };
+
 // Initialize the express app + front controller.
 var app = express();
-
-var Front = new API.httpStrategies.Express(Controller, Docs);
+var Front = new API.httpStrategies.Express(Controller, Docs, opts);
 var apiReqHandler = Front.apiRequest.bind(Front);
 
 // Enable CORS. Note: if you copy this code into production, you may want to
