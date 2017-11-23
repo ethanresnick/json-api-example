@@ -49,6 +49,36 @@ app.use(function(req, res, next) {
 })
 
 // Now, add the routes.
+// First, add routes that construct custom queries.
+
+// 1. This route demonstrates adding a where clause to the library-generated query.
+// query.andWhere returns a new query that'll be used in place of the original.
+app.get('/:type(schools)/colleges',
+  Front.transformedAPIRequest((query) =>
+    query.andWhere({ field: "isCollege", operator: "eq", value: true })));
+
+// 2. For the route below, stick some extra computed data in meta if the
+// ?addNameList param is present. This shows how to get access to req in your
+// query transform fn and modify the response document. Note, you can
+// call `.resultsIn` with a second argument too to format query errors.
+// See https://github.com/ethanresnick/json-api/blob/c394e2c2cdeae63acf3c6660516891a2cf56affb/test/app/src/index.ts#L51
+app.get('/:type(people)',
+  Front.transformedAPIRequest((req, query) => {
+    if(!('addNameList' in req.query)) {
+      return query;
+    }
+
+    const origReturning = query.returning;
+    return query.resultsIn((...args) => {
+      const origResult = origReturning(...args);
+      const names = origResult.document.primary.resources.map(it => it.attrs.name);
+      origResult.document.meta = { ...origResult.document.meta, names };
+      return origResult;
+    })
+  })
+);
+
+// Add generic/untransformed routes.
 // To do this in a more scalable and configurable way, check out
 // http://github.com/ethanresnick/express-simple-router. To protect some
 // routes, check out http://github.com/ethanresnick/express-simple-firewall.

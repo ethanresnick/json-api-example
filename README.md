@@ -1,5 +1,5 @@
 # json-api-example
-An example API created with my JSON-API library (http://github.com/ethanresnick/json-api)
+An example API created with v3 of my JSON-API library (http://github.com/ethanresnick/json-api).
 
 # Try it out
 
@@ -10,6 +10,9 @@ An example API created with my JSON-API library (http://github.com/ethanresnick/
 5. Try out the following (for example):
   - `GET http://localhost:3000/` to view the auto-generated documentation
   - `GET http://localhost:3000/people` to view the people collection
+  - `GET http://localhost:3000/people?addNameList` as an example of modifying the library-generated response document (see extra info in `meta`) 
+  - `GET http://localhost:3000/schools` to view all schools
+  - `GET http://localhost:3000/schools/colleges` as an example of constructing a custom query for a request, to show only colleges
   - `POST http://localhost:3000/schools` to add a school
   - `GET http://localhost:3000/organizations` to view the organizations collection, which includes all schools too
   - `GET http://localhost:3000/people/{id}` to view a person, after it's been created
