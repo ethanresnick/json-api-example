@@ -39,7 +39,7 @@ var opts = { host: 'example.com' };
 // Initialize the express app + front controller.
 var app = express();
 var Front = new API.httpStrategies.Express(Controller, Docs, opts);
-var apiReqHandler = Front.apiRequest.bind(Front);
+var apiReqHandler = Front.apiRequest;
 
 // Enable CORS. Note: if you copy this code into production, you may want to
 // disable this. See https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
@@ -53,9 +53,12 @@ app.use(function(req, res, next) {
 
 // 1. This route demonstrates adding a where clause to the library-generated query.
 // query.andWhere returns a new query that'll be used in place of the original.
-app.get('/:type(schools)/colleges',
-  Front.transformedAPIRequest((query) =>
-    query.andWhere({ field: "isCollege", operator: "eq", value: true })));
+app.get('/:type(schools)/colleges', Front.customAPIRequest({
+  queryFactory: async (opts) => {
+    const origQuery = await opts.makeQuery(opts);
+    return origQuery.andWhere({ field: "isCollege", operator: "eq", value: true });
+  }
+}));
 
 // 2. For the route below, stick some extra computed data in meta if the
 // ?addNameList param is present. This shows how to get access to req in your
@@ -69,9 +72,9 @@ app.get('/:type(people)',
     }
 
     const origReturning = query.returning;
-    return query.resultsIn((...args) => {
-      const origResult = origReturning(...args);
-      const names = origResult.document.primary.resources.map(it => it.attrs.name);
+    return query.resultsIn(async (...args) => {
+      const origResult = await origReturning(...args);
+      const names = origResult.document.primary.map(it => it.attrs.name).values;
       origResult.document.meta = { ...origResult.document.meta, names };
       return origResult;
     })
@@ -82,7 +85,7 @@ app.get('/:type(people)',
 // To do this in a more scalable and configurable way, check out
 // http://github.com/ethanresnick/express-simple-router. To protect some
 // routes, check out http://github.com/ethanresnick/express-simple-firewall.
-app.get("/", Front.docsRequest.bind(Front));
+app.get("/", Front.docsRequest);
 app.route("/:type(people|organizations|schools)")
   .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
 app.route("/:type(people|organizations|schools)/:id")
