@@ -1,3 +1,5 @@
+const API = require('json-api');
+
 module.exports = {
   urlTemplates: {
     "self": "http://127.0.0.1:3000/people/{id}",
@@ -36,6 +38,17 @@ module.exports = {
    *   remove the resource from the response entirely
    */
   beforeRender: function(resource, req, res, superFn) {
+    // Add a simulated "principalOf" link, which is the inverse of
+    // the School.principal relationship. Don't fill it with contents
+    // (by default), but do provide a link to the data on the school side.
+    resource.relationships.principalOf = API.Relationship.of({
+      links: {
+        related: ({ type, ownerId}) =>
+          `http://127.0.0.1:3000/schools?filter=(principal,${ownerId})`
+      },
+      owner: { type: resource.type, id: resource.id, path: "principalOf"}
+    });
+
     return resource;
   }
 };
