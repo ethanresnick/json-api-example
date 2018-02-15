@@ -7,17 +7,17 @@
     "node": ">=6.0.0"
   },
   "dependencies": {
-    "body-parser": "^1.3.1",
+    "body-parser": "^1.18.2",
     "confit": "^1.1.2",
     "express": "~4.4.x",
-    "express-session": "^1.3.1",
+    "express-session": "^1.15.6",
     "express-simple-firewall": "1.0.x",
     "express-simple-router": "0.0.x",
-    "json-api": "3.0.0-alpha.11",
+    "json-api": "3.0.0-beta.11",
+    "mongoose": "4.8.x",
     "path-to-regexp": "0.1.2",
-    "mongoose": "4.0.x",
     "pluralize": "0.0.10",
-    "q": "^1.0.1"
+    "q": "^1.5.1"
   },
   "devDependencies": {
     "chai": "~1.9.0",
