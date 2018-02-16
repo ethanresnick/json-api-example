@@ -35,7 +35,7 @@ var Controller = new API.controllers.API(registry);
 var Docs = new API.controllers.Documentation(registry, {name: 'Example API'});
 
 // tell the lib the host name your API is served from; needed for security.
-var opts = { host: 'example.com' };
+var opts = { host: 'http://127.0.0.1:3000' };
 
 // Initialize the express app + front controller.
 var app = express();
