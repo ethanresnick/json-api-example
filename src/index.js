@@ -46,8 +46,12 @@ var apiReqHandler = Front.apiRequest;
 // disable this. See https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
 app.use(function(req, res, next) {
   res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
   next();
 })
+
+app.options('*', (req, res) => res.end());
 
 // Now, add the routes.
 // To demo some advanced functionality, we start with a route below that
