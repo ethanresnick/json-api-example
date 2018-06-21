@@ -39,10 +39,17 @@ var app = express();
 var Front = new API.httpStrategies.Express(Controller, Docs);
 var apiReqHandler = Front.apiRequest.bind(Front);
 
-// Enable CORS. Note: if you copy this code into production, you may want to
-// disable this. See https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
+// Enable basic CORS. Note: if you copy this code into production, 
+// you may want to disable this or customize it. 
+//See https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
 app.use(function(req, res, next) {
-  res.set('Access-Control-Allow-Origin', '*');
+  if(isCORSPreflight(req)) {  
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET,POST,PATCH,PUT,DELETE,OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length');
+    return res.send(200);
+  }
+
   next();
 })
 
@@ -65,3 +72,7 @@ app.use(function(req, res, next) {
 // And we're done! Start 'er up!
 console.log('Starting up! Visit 127.0.0.1:3000 to see the docs.');
 app.listen(3000);
+
+function isCORSPreflight(req) {
+  return req.method.toUpperCase() === 'OPTIONS' && typeof req.get('Origin') !== 'undefined';
+}
