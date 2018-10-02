@@ -8,36 +8,16 @@
   },
   "dependencies": {
     "body-parser": "^1.18.2",
-    "confit": "^1.1.2",
-    "express": "~4.4.x",
+    "express": "^4.16.3",
     "express-session": "^1.15.6",
     "express-simple-firewall": "1.0.x",
     "express-simple-router": "0.0.x",
     "json-api": "^3.0.0-rc.6.0.1",
     "mongoose": "4.8.x",
     "path-to-regexp": "0.1.2",
-    "pluralize": "0.0.10",
-    "q": "^1.5.1"
-  },
-  "devDependencies": {
-    "chai": "~1.9.0",
-    "event-stream": "3.1.x",
-    "gulp": "3.8.x",
-    "gulp-changed": "0.2.x",
-    "gulp-clean": "0.2.x",
-    "gulp-exec": "1.0.x",
-    "gulp-filter": "0.3.x",
-    "gulp-jshint": "^1.6.4",
-    "gulp-mocha": "^0.4.1",
-    "gulp-replace": "0.2.x",
-    "gulp-util": "2.2.x",
-    "mocha": "~1.10.0",
-    "sinon": "1.10.2",
-    "sinon-chai": "2.5.x",
-    "supertest": "~0.8.2"
+    "pluralize": "0.0.10"
   },
   "scripts": {
-    "start": "node src/index.js",
-    "test": "mocha $(find test -name \"*.js\")"
+    "start": "node src/index.js"
   }
 }
