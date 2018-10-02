@@ -13,7 +13,7 @@
     "express-session": "^1.15.6",
     "express-simple-firewall": "1.0.x",
     "express-simple-router": "0.0.x",
-    "json-api": "^3.0.0-rc.4.0.1",
+    "json-api": "^3.0.0-rc.6.0.1",
     "mongoose": "4.8.x",
     "path-to-regexp": "0.1.2",
     "pluralize": "0.0.10",

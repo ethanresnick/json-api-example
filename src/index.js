@@ -68,18 +68,20 @@ app.get('/:type(schools)/colleges', Front.customAPIRequest({
 // call `.resultsIn` with a second argument too to format query errors.
 // See https://github.com/ethanresnick/json-api/blob/c394e2c2cdeae63acf3c6660516891a2cf56affb/test/app/src/index.ts#L51
 app.get('/:type(people)',
-  Front.transformedAPIRequest((req, query) => {
-    if(!('addNameList' in req.query)) {
-      return query;
-    }
+  Front.customAPIRequest({
+    queryTransform: (req, query) => {
+      if(!('addNameList' in req.query)) {
+        return query;
+      }
 
-    const origReturning = query.returning;
-    return query.resultsIn(async (...args) => {
-      const origResult = await origReturning(...args);
-      const names = origResult.document.primary.map(it => it.attrs.name).values;
-      origResult.document.meta = { ...origResult.document.meta, names };
-      return origResult;
-    })
+      const origReturning = query.returning;
+      return query.resultsIn(async (...args) => {
+        const origResult = await origReturning(...args);
+        const names = origResult.document.primary.map(it => it.attrs.name).values;
+        origResult.document.meta = { ...origResult.document.meta, names };
+        return origResult;
+      })
+    }
   })
 );
 
